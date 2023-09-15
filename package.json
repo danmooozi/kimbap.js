@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/danmooozi/kimbap.js/issues"
   },
-  "homepage": "https://github.com/danmooozi/kimbap.js#readme"
+  "homepage": "https://github.com/danmooozi/kimbap.js#readme",
+  "dependencies": {
+    "esprima": "^4.0.1"
+  }
 }
