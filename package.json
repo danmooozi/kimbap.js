@@ -1,0 +1,27 @@
+{
+  "name": "kimbap",
+  "version": "1.0.0",
+  "description": "JavaScript bundler",
+  "main": "kimbap.config.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "node ./lib/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danmooozi/kimbap.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danmooozi/kimbap.js/issues"
+  },
+  "homepage": "https://github.com/danmooozi/kimbap.js#readme",
+  "dependencies": {
+    "acorn": "^8.10.0",
+    "acorn-walk": "^8.2.0"
+  }
+}
