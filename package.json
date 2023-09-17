@@ -1,0 +1,15 @@
+{
+  "name": "kimbap",
+  "version": "1.0.0",
+  "description": "JavaScript bundler",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "RookieAND (Baik Gwangin)",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.22.20"
+  },
+  "type": "module"
+}
