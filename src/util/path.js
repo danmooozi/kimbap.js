@@ -6,6 +6,8 @@ import {
   writeFileSync,
 } from 'fs';
 
+import { join } from 'path';
+
 /**
  * Node.js 에서 require() 모듈을 찾기 위해 진행하는 알고리즘을 구현하기 위한 Util
  * 추가로 특정 경로에 위치한 파일의 정보를 가져오는 로직도 이 Util 내부에 구현하였습니다.
@@ -19,8 +21,6 @@ import {
  */
 
 class PathUtil {
-  // 루트 경로 rootPath
-  #rootPath = `${process.cwd()}/`;
 
   // 해당 경로가 디렉토리인지를 판별하는 함수 isDirectory
   static isDirectory(path) {
@@ -54,7 +54,7 @@ class PathUtil {
   }
 
   // 특정 경로에 파일을 추가해주는 함수 writeFile
-  static writeFile(path, content) {
+  static writeFile(path, fileName, content) {
     try {
       // output path에 디렉토리가 없을 경우 새롭게 만들어준다.
       if (!existsSync(path)) {
@@ -62,7 +62,8 @@ class PathUtil {
       }
 
       // output 디렉토리에 Bundling 된 파일을 추가한다.
-      writeFileSync(path, content, 'UTF-8');
+      const outputDirectory = join(path, fileName);
+      writeFileSync(outputDirectory, content, 'UTF-8');
     } catch (error) {
       console.error(error);
     }

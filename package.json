@@ -9,7 +9,8 @@
   "author": "RookieAND (Baik Gwangin)",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.22.20"
+    "@babel/core": "^7.22.20",
+    "@babel/preset-env": "^7.22.20"
   },
   "type": "module"
 }

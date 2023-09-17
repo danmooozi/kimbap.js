@@ -6,7 +6,7 @@ class TemplateUtil {
     function require(filepath) {
       const { moduleFunc, mappedModule } = modules[filepath];
       const requireFunc = filename => require(mappedModule[filename])
-      const module = { exports: {}};
+      const module = { exports: {} };
       moduleFunc(requireFunc, module, module.exports);
       return module.exports;
     }

@@ -25,11 +25,8 @@ class KimbapBundler {
   build() {
     const dependencyTree = new ModuleBuilder(this.entry, this.entry);
     const outputContent = this.bundle(dependencyTree);
-    const outputDirectory = dirname(join(this.output.path, this.output.fileName));
 
-    console.log(outputDirectory);
-
-    PathUtil.writeFile(outputDirectory, outputContent);
+    PathUtil.writeFile(this.output.path, this.output.fileName, outputContent);
   }
 }
 
