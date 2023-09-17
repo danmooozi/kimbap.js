@@ -1,5 +1,5 @@
-import { NAME, COUNTRY } from "./constants.js";
-import { myFunction, anotherFunction } from "./functions.js";
+const { NAME, COUNTRY } = require("./constants.js");
+const { myFunction, anotherFunction } = require("./functions.js");
 
 console.log(myFunction());
 console.log("Name: ", NAME);
