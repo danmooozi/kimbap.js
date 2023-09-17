@@ -1,2 +1,4 @@
 *.code-workspace
 /dist
+/.vscode
+/node_modules
