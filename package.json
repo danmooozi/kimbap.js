@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/danmooozi/kimbap.js#readme",
   "dependencies": {
+    "@babel/core": "^7.22.19",
+    "@babel/preset-env": "^7.22.15",
     "acorn": "^8.10.0",
     "acorn-walk": "^8.2.0"
   }
