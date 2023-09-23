@@ -45,6 +45,22 @@ const kimbapVisitor = {
     // const newIdentifier = require(`path.get("source.value").node`);
     path.replaceWith(newNode);
   },
+
+  ExportDefaultDeclaration(path) {
+    const declaration = path.get("declaration");
+
+    // 함수선언문인 경우
+    if (declaration.isFunctionDeclaration()) {
+      const buildRequire = template(`module.exports = MODULE;`);
+      const newNode = buildRequire({
+        MODULE: t.identifier(declaration.node.id.name),
+      });
+
+      // module.exports = test;
+      // function test(){...}
+      path.replaceWithMultiple([newNode, declaration.node]);
+    }
+  },
 };
 
 const transform = (ast, content) => {
