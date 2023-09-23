@@ -26,11 +26,20 @@ const writeFile = (filepath, data) => {
   };
 
   const content = `
+    // case 1:
     import square from './square';
     console.log("Area of square: ", square(3, 5));
+
+    // case 2:
+    import {a, b} from './square';
+    console.log("Area of square: ", a(3, 5));
   `;
   const ast = contentToAST(content);
   const { transformedAst, transformedContent } = transform(ast, content);
 
   writeFile(join(output.path, output.filename), transformedContent);
 })();
+
+module.exports = {
+  contentToAST,
+};

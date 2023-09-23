@@ -4,7 +4,8 @@
   "description": "JavaScript bundler",
   "main": "index.js",
   "scripts": {
-    "start": "node ./main.js"
+    "start": "node ./main.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -18,5 +19,8 @@
   "homepage": "https://github.com/danmooozi/kimbap.js#readme",
   "dependencies": {
     "@babel/core": "^7.22.20"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
