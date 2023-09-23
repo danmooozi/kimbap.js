@@ -1,0 +1,22 @@
+{
+  "name": "kimbap",
+  "version": "1.0.0",
+  "description": "JavaScript bundler",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danmooozi/kimbap.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danmooozi/kimbap.js/issues"
+  },
+  "homepage": "https://github.com/danmooozi/kimbap.js#readme",
+  "dependencies": {
+    "@babel/core": "^7.22.20"
+  }
+}
