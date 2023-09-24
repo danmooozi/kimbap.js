@@ -43,7 +43,7 @@ describe("ExportDefaultDeclaration", () => {
     `;
 
     const expectedTransformedContent = format`
-      module.exports = test;
+      module.exports.default = test;
       function test(user) {
         console.log(user);
       }
@@ -63,7 +63,7 @@ describe("ExportDefaultDeclaration", () => {
 
     const expectedTransformedContent = format`
       const test = 'test';
-      module.exports = test;
+      module.exports.default = test;
     `;
 
     expect(contentToTransformedContent(content)).toBe(

@@ -4,13 +4,11 @@ const isArray = (val) => Array.isArray(val);
 const isObject = (val) =>
   val !== null && typeof val === "object" && !isArray(val);
 
-const getModuleExportsAssignment = (value, property = false) => {
-  const moduleTemplate = property
-    ? template(`module.exports.PROPERTY = MODULE;`)
-    : template(`module.exports = MODULE;`);
+const getModuleExportsAssignment = (value, property = "default") => {
+  const moduleTemplate = template(`module.exports.PROPERTY = MODULE;`);
 
   const newNode = moduleTemplate({
-    ...(property && { PROPERTY: property }),
+    PROPERTY: property,
     MODULE: value,
   });
 
