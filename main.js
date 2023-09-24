@@ -26,9 +26,7 @@ const writeFile = (filepath, data) => {
   };
 
   const content = `
-    const test = 'test';
-
-    export default test;
+  export function functionName() {}
   `;
   const ast = contentToAST(content);
   const { transformedAst, transformedContent } = transform(ast, content);

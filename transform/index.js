@@ -4,10 +4,14 @@ const isArray = (val) => Array.isArray(val);
 const isObject = (val) =>
   val !== null && typeof val === "object" && !isArray(val);
 
-const getModuleExportsAssignment = (name) => {
-  const buildRequire = template(`module.exports = MODULE;`);
-  const newNode = buildRequire({
-    MODULE: name,
+const getModuleExportsAssignment = (value, property = false) => {
+  const moduleTemplate = property
+    ? template(`module.exports.PROPERTY = MODULE;`)
+    : template(`module.exports = MODULE;`);
+
+  const newNode = moduleTemplate({
+    ...(property && { PROPERTY: property }),
+    MODULE: value,
   });
 
   return newNode;
@@ -73,6 +77,54 @@ const kimbapVisitor = {
     // module.exports = test;
     path.replaceWith(
       getModuleExportsAssignment(t.identifier(declaration.node.name))
+    );
+  },
+
+  ExportNamedDeclaration(path) {
+    const declarations = [];
+
+    // Exporting declarations
+    if (path.has("declaration")) {
+      const declaration = path.get("declaration");
+
+      if (declaration.isFunctionDeclaration()) {
+        declarations.push({
+          name: declaration.node.id,
+          value: t.toExpression(declaration.node),
+        });
+      }
+
+      if (declaration.isVariableDeclaration()) {
+        // export const foo = 'a';
+        // export const foo = 'a', bar = 'b';
+        const decls = declaration.get("declarations");
+
+        decls.forEach((decl) => {
+          declarations.push({
+            name: decl.get("id").node,
+            value: decl.get("init").node,
+          });
+        });
+      }
+    }
+
+    // Export list
+    if (path.has("specifiers")) {
+      const specifiers = path.get("specifiers");
+
+      specifiers.forEach((specifier) => {
+        declarations.push({
+          name: specifier.get("exported").node,
+          value: specifier.get("local").node,
+        });
+      });
+    }
+
+    // module.exports.[property] = value;
+    path.replaceWithMultiple(
+      declarations.map((decl) =>
+        getModuleExportsAssignment(decl.value, decl.name)
+      )
     );
   },
 };

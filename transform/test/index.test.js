@@ -71,3 +71,53 @@ describe("ExportDefaultDeclaration", () => {
     );
   });
 });
+
+describe("ExportNamedDeclaration", () => {
+  it("can support function Declaration", () => {
+    const content = `
+      export function functionName() {}
+    `;
+
+    const expectedTransformedContent = format`
+      module.exports.functionName = function functionName() {};
+    `;
+
+    expect(contentToTransformedContent(content)).toBe(
+      expectedTransformedContent
+    );
+  });
+
+  it("can support Variable Declarations", () => {
+    const content = `
+      export const foo = 'a', bar = 'b';
+    `;
+
+    const expectedTransformedContent = format`
+      module.exports.foo = 'a';
+      module.exports.bar = 'b';
+    `;
+
+    expect(contentToTransformedContent(content)).toBe(
+      expectedTransformedContent
+    );
+  });
+
+  it("can support export list", () => {
+    const content = `
+      const name1 = 'a';
+      const name2 = 'b';
+      export { name1, name2 };
+    `;
+
+    const expectedTransformedContent = format`
+      const name1 = 'a';
+      const name2 = 'b';
+      module.exports.name1 = name1;
+      module.exports.name2 = name2;
+    `;
+
+    expect(contentToTransformedContent(content)).toBe(
+      expectedTransformedContent
+    );
+  });
+});
