@@ -1,0 +1,26 @@
+{
+  "name": "kimbap",
+  "version": "1.0.0",
+  "description": "javascript bundler",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danmooozi/kimbap.js.git"
+  },
+  "keywords": [
+    "bundler"
+  ],
+  "author": "danmoozi",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/danmooozi/kimbap.js/issues"
+  },
+  "homepage": "https://github.com/danmooozi/kimbap.js#readme",
+  "dependencies": {
+    "@babel/core": "^7.22.20"
+  }
+}
