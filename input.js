@@ -19,7 +19,6 @@ const readFile = (filename) => {
 
 /**
  * 주어진 파일을 bable/parse로 AST를 반환
- * @function
  * @param {string} filename - 분석할 파일의 이름.
  * @returns {Object}
  */
