@@ -1,19 +1,12 @@
-/* 
-    1. package.json 병합
-    2. .gitignore 병합
-    3. README.md 병합
-    4. LICENSE 병합
-    5. .prettierrc 병합
-*/
-/*
-    1. alias 도 잘 읽어 올 수 있는가?
-    2. 지금 결과물로도 parsing 이 가능한가?
-
-*/
 import { parseSync } from "@babel/core";
 import { readFileSync } from "fs";
 import path from "path";
 
+/**
+ * 주어진 파일에서 문자열을 읽어 반환
+ * @param {string} filename - 읽을 파일의 이름.
+ * @returns {string|null} 파일의 내용 또는 오류가 발생한 경우 null.
+ */
 const readFile = (filename) => {
   try {
     const data = readFileSync(filename, "utf-8");
@@ -24,24 +17,29 @@ const readFile = (filename) => {
   }
 };
 
+/**
+ * 주어진 파일을 bable/parse로 AST를 반환
+ * @function
+ * @param {string} filename - 분석할 파일의 이름.
+ * @returns {Object}
+ */
 const parseFile = (filename) => {
-  try {
-    const absolutePath = path.resolve(filename);
-    const code = readFile(absolutePath);
+  const absolutePath = path.resolve(filename);
+  const code = readFile(absolutePath);
 
-    if (code === null) {
-      throw new Error(`Cannot read file ${filename}`);
-    }
-
-    const ast = parseSync(code, { filename: absolutePath });
-
-    return ast;
-  } catch (error) {
-    console.error(error);
-    return null;
+  if (code === null) {
+    throw new Error(`Cannot read file ${filename}`);
   }
+
+  const ast = parseSync(code, { filename: absolutePath });
+
+  return ast;
 };
 
+/**
+ * CLI 분석용 함수
+ * @returns {Object} 옵션과 파일 경로 객체
+ */
 const inputInterface = () => {
   const [, , ...args] = process.argv;
 
@@ -54,6 +52,10 @@ const inputInterface = () => {
   }
 };
 
+/**
+ * 파일을 읽어 AST를 반환
+ * @returns {Object} AST
+ */
 const fileInput = () => {
   const { option, filePath } = inputInterface();
   const ast = parseFile(filePath);
@@ -64,5 +66,4 @@ const fileInput = () => {
   return ast;
 };
 
-fileInput();
 export default fileInput;
