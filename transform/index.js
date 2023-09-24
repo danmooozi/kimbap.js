@@ -4,6 +4,15 @@ const isArray = (val) => Array.isArray(val);
 const isObject = (val) =>
   val !== null && typeof val === "object" && !isArray(val);
 
+const getModuleExportsAssignment = (name) => {
+  const buildRequire = template(`module.exports = MODULE;`);
+  const newNode = buildRequire({
+    MODULE: name,
+  });
+
+  return newNode;
+};
+
 const kimbapVisitor = {
   ImportDeclaration(path) {
     const newIdentifier = path.scope.generateUidIdentifier("imported");
@@ -51,15 +60,20 @@ const kimbapVisitor = {
 
     // 함수선언문인 경우
     if (declaration.isFunctionDeclaration()) {
-      const buildRequire = template(`module.exports = MODULE;`);
-      const newNode = buildRequire({
-        MODULE: t.identifier(declaration.node.id.name),
-      });
-
       // module.exports = test;
       // function test(){...}
-      path.replaceWithMultiple([newNode, declaration.node]);
+      path.replaceWithMultiple([
+        getModuleExportsAssignment(t.identifier(declaration.node.id.name)),
+        declaration.node,
+      ]);
+      return;
     }
+
+    // 나머지인 경우
+    // module.exports = test;
+    path.replaceWith(
+      getModuleExportsAssignment(t.identifier(declaration.node.name))
+    );
   },
 };
 

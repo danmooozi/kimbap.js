@@ -26,9 +26,7 @@ const writeFile = (filepath, data) => {
   };
 
   const content = `
-    function test(user) {
-        console.log(user);
-    };
+    const test = 'test';
 
     export default test;
   `;

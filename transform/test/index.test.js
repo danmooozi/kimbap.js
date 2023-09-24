@@ -54,4 +54,20 @@ describe("ExportDefaultDeclaration", () => {
       expectedTransformedContent
     );
   });
+
+  it("can support Variable Declarations", () => {
+    const content = `
+      const test = 'test';
+      export default test;
+    `;
+
+    const expectedTransformedContent = format`
+      const test = 'test';
+      module.exports = test;
+    `;
+
+    expect(contentToTransformedContent(content)).toBe(
+      expectedTransformedContent
+    );
+  });
 });
