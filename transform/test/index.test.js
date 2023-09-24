@@ -8,6 +8,8 @@ describe("import declaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       const _imported = require("./square");
       console.log("Area of square: ", _imported["default"](3, 5));
     `;
@@ -24,6 +26,8 @@ describe("import declaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       const _imported = require("./square");
       console.log("Area of square: ", _imported["a"](3, 5));
     `;
@@ -43,6 +47,8 @@ describe("ExportDefaultDeclaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       module.exports.default = test;
       function test(user) {
         console.log(user);
@@ -62,6 +68,8 @@ describe("ExportDefaultDeclaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       const test = 'test';
       module.exports.default = test;
     `;
@@ -79,6 +87,8 @@ describe("ExportNamedDeclaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       module.exports.functionName = function functionName() {};
     `;
 
@@ -93,6 +103,8 @@ describe("ExportNamedDeclaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       module.exports.foo = 'a';
       module.exports.bar = 'b';
     `;
@@ -110,6 +122,8 @@ describe("ExportNamedDeclaration", () => {
     `;
 
     const expectedTransformedContent = format`
+      "use strict";
+
       const name1 = 'a';
       const name2 = 'b';
       module.exports.name1 = name1;

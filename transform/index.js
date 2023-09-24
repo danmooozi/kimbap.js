@@ -16,6 +16,21 @@ const getModuleExportsAssignment = (value, property = "default") => {
 };
 
 const kimbapVisitor = {
+  Program(path, state) {
+    const {
+      node: { directives },
+    } = path;
+
+    for (const directive of directives) {
+      if (directive.value.value === "use strict") return;
+    }
+
+    path.unshiftContainer(
+      "directives",
+      t.directive(t.directiveLiteral("use strict"))
+    );
+  },
+
   ImportDeclaration(path) {
     const newIdentifier = path.scope.generateUidIdentifier("imported");
     const specifiers = path.get("specifiers");
