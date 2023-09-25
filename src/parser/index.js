@@ -1,75 +1,129 @@
-import { join, dirname } from 'path';
-import { transformFromAstSync } from '@babel/core';
+import { dirname } from 'path';
+import { parseSync } from '@babel/core';
+import Queue from '../util/queue';
+import PathUtil from '../util/path';
 
-import PathUtil from '../util/path.js';
+class ModuleCompiler {
+  constructor( entry ) {
+    this.entry = entry;
+    // 탐색한 모듈의 경로를 보관한 Set findModuleSet
+    this.findModuleList = new Set();
+    // 컴파일 예정인 모듈 목록을 담은 Queue compiledQueue
+    this.compiledQueue = new Queue();
+    // 컴파일이 완료된 모듈을 담은 Array compiledModules
+    this.compiledModules = [];
+  }
 
-class Parser {
-  // 의존성 트리를 기반으로 모듈을 추출하여 배열로 반환하는 함수 getModulesFromGraph
-  static getModulesFromTree(graph) {
-    const moduleCache = new Set();
+  run() {
+    const entryPath = this.getLocalModulePath(entry);
 
-    function collectDependencies(module) {
-      if (moduleCache.has(module)) return;
+    // Entry 파일의 path 를 컴파일 대상으로 추가한다.
+    this.compiledQueue.enqueue(entryPath);
+    this.findModuleMap.set(entryPath);
 
-      // 새로운 모듈을 캐싱하고, 해당 모듈과 의존성 관계에 놓인 모듈에 대해서 재귀 탐색
-      moduleCache.add(module);
-      (module?.dependencyTree || []).forEach(collectDependencies);
+    // 의존성 관계를 가진 모든 하위 모듈들에 대한 재귀 탐색 진행.
+    while (this.compiledQueue.size()) {
+      let currentModulePath = this.compiledQueue.dequeue();
+      const compiledModule = this.compiledModules(currentModulePath)
+      this.compiledModules.push((compiledModule));
     }
 
-    collectDependencies(graph);
-    return Array.from(moduleCache);
+    return this.compiledModules;
   }
 
-  // AST 노드를 CommonJS + ES5 코드로 변환시키는 함수 transformCodeFromAST
-  static transformCodeFromAST(ast) {
-    const { code } = transformFromAstSync(ast, null, {
-      presets: ['@babel/preset-env'],
-    });
-    return code;
-  }
+  compileModule(filePath) {
+    let fileContent = PathUtil.getContentInPath(filePath, 'utf-8');
+    const ast = parseSync(fileContent);
 
-  // ImportDeclaration (import) type인 Node를 찾고 경로를 추출하는 함수 getDependencyPaths
-  static getDependencyPaths(ast) {
-    return ast.program.body
+    // 현재 컴파일을 진행 중인 모듈과 의존성 관계를 맺은 모듈 경로 목록.
+    const dependencyList = [];
+
+    // 해당 Module의 AST를 순회하여 ImportDeclaration 타입의 노드를 찾는다.
+    ast.program.body
       .filter((node) => node.type === 'ImportDeclaration')
-      .map(({ source }) => source.value);
+      .map(({ source }) => {
+        const importPath = source.value;
+
+        // 앞이 '.' 으로 시작하는지 아닌지에 따라 경로 탐색 로직을 이원화.
+        const modulePath = importPath.startsWith('.')
+          ? this.getLocalModulePath(importPath, filePath)
+          : this.getNpmModulePath(importPath, filePath);
+
+        // 새로 찾은 모듈이라면 목록에 추가하고, 다음 컴파일할 목록에 추가한다.
+        if (!this.findModuleList.has(modulePath)) {
+          this.findModuleList.add(modulePath);
+          this.compiledQueue.enqueue(modulePath);
+        }
+
+        dependencyList.push(modulePath);
+      }); 
+
+    return { modulePath, dependencyList }
   }
 
-  // 상대 경로와 파일명을 기반으로 모듈의 실제 경로를 찾아내는 함수 resolveModulePath
-  static resolveModulePath(path, fileName) {
-    const pathWithExtension = PathUtil.getModulePathWithExtension(path, '.js');
+  getLocalModulePath(path, root) {
+    let absolutePath = root ? resolve(dirname(root), path) : resolve(path);
 
-    // 1. 상대 경로라면 해당 파일의 경로를 완전히 붙여 반환한다.
-    if (PathUtil.isRelativePath(pathWithExtension)) {
-      return join(dirname(fileName), pathWithExtension);
+    // 1. 해당 절대 경로에 파일이 존재한다면 모듈이므로, 즉시 return
+    if (PathUtil.isFile(absolutePath)) {
+      return absolutePath;
     }
 
-    // 2. 절대 경로라면 경로 그대로를 반환한다 (절대 경로가 목적이므로)
-    if (PathUtil.isAbsolutePath(pathWithExtension)) {
-      return pathWithExtension;
+    // 2. 디렉토리 내 index.js 가 존재한다면 해당 경로를 return 시킨다.
+    let indexPath = resolve(absolutePath, 'index.js');
+
+    if (PathUtil.isDirectory(absolutePath) && PathUtil.isFile(indexPath)) {
+      return indexPath;
     }
 
-    // 3. 절대 경로도 상대 경로도 아니라면 node_modules 내에 있다.
-    const nodeModulePath = `${process.cwd()}/node_modules/${path}`;
-    const nodeModulePathWithExtension =
-      PathUtil.getModulePathWithExtension(nodeModulePath);
+    throw new Error('해당 모듈의 경로를 찾을 수 없습니다.');
+  }
 
-    // 3-1. 해당 경로가 node_module 내 디렉토리라면 해당 패키지의 정보를 담은 package.json 을 가져온다.
-    // package.json 내부에 main 속성이 있으면 해당 내용을, 그렇지 않으면 index.js 를 가져온다 (기본 Entry)
-    if (PathUtil.isDirectory(nodeModulePath)) {
-      const packagePath = join(nodeModulePath, 'package.json');
-      const packageContent = JSON.parse(PathUtil.getContentInPath(packagePath));
-      return packageContent.main || 'index.js';
+  getNpmModulePath(package, root) {
+    let rootPath = dirname(root);
+
+    // 해당 루트 경로를 기준으로 node_modules 디렉토리가 있는지 검사.
+    const checkIsNodeModule = (rootPath) => {
+      const resolvedPath = resolve(rootPath, 'node_modules');
+      return PathUtil.isDirectory(resolvedPath);
+    };
+
+    // 재귀적으로 루트 폴더 하위에 node_modules 이 있는지를 모두 검사.
+    while (!checkIsNodeModule(rootPath)) {
+      rootPath = dirname(rootPath);
     }
 
-    // 3-2. 해당 경로가 node_module 내 파일을 지칭한다면 해당 경로를 반환한다.
-    if (PathUtil.isFile(nodeModulePathWithExtension)) {
-      return nodeModulePathWithExtension;
+    // node_modules 탐색 종료 후, 해당 위치를 기반으로 package의 경로를 추출
+    let packagePath = resolve(rootPath, 'node_modules', package);
+
+    // 1. 해당 Path 가 파일을 경우, 즉시 해당 경로를 return
+    let packageFilePath = packagePath + '.js';
+    if (PathUtil.isFile(packageFilePath)) {
+      return packageFilePath;
     }
 
-    // 3-3. 모든 케이스에 포함되지 않았다면 error 를 throw 한다. (Resource 를 찾을 수 없음)
-    throw new Error('해당 경로에 위치한 Module을 찾을 수 없습니다.');
+    // 2. 해당 path 의 디렉토리 내에 위치한 package.json을 읽고 main Entry를 추출.
+    let packageJsonPath = resolve(packagePath, 'package.json');
+    if (PathUtil.isFile(packageJsonPath)) {
+      let jsonContent = JSON.parse(PathUtil.getContentInPath(packageJsonPath));
+
+      // packaage.json 에 명시된 module 혹은 main의 경로를 추출한다.
+      let mainPath = jsonContent.module || jsonContent.main || undefined;
+
+      if (mainPath) {
+        return resolve(packagePath, main);
+      }
+    }
+
+    // 3. 해당 path 의 디렉토리 내에 존재하는 index.js 가 있는지 체크한다.
+    const indexPath = resolve(packagePath, 'index.js');
+    if (PathUtil.isFile(indexPath)) {
+      return indexPath;
+    }
+
+    // 4. 위 세 가지 케이스에 걸리지 않으면 모듈이 없다는 의미이므로 에러를 throw
+    throw new Error(`해당 경로에 위치한 모듈을 찾을 수 없습니다.`);
   }
 }
 
-export default Parser;
+export default ModuleCompiler;
