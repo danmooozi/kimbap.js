@@ -1,37 +1,41 @@
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 import { parseSync } from '@babel/core';
-import Queue from '../util/queue';
-import PathUtil from '../util/path';
+import Queue from '../util/queue.js';
+import PathUtil from '../util/path.js';
 
 class ModuleCompiler {
-  constructor( entry ) {
+  constructor(entry) {
     this.entry = entry;
-    // 탐색한 모듈의 경로를 보관한 Set findModuleSet
-    this.findModuleList = new Set();
-    // 컴파일 예정인 모듈 목록을 담은 Queue compiledQueue
-    this.compiledQueue = new Queue();
     // 컴파일이 완료된 모듈을 담은 Array compiledModules
     this.compiledModules = [];
   }
 
+  // 탐색한 모듈의 경로를 보관한 Set findModuleSet
+  #findModuleList = new Set();
+  // 컴파일 예정인 모듈 목록을 담은 Queue compiledQueue
+  #compiledQueue = new Queue();
+
   run() {
-    const entryPath = this.getLocalModulePath(entry);
+    const entryPath = this.#getLocalModulePath(this.entry);
 
     // Entry 파일의 path 를 컴파일 대상으로 추가한다.
-    this.compiledQueue.enqueue(entryPath);
-    this.findModuleMap.set(entryPath);
+    this.#compiledQueue.enqueue(entryPath);
+    this.#findModuleList.add(entryPath);
 
     // 의존성 관계를 가진 모든 하위 모듈들에 대한 재귀 탐색 진행.
-    while (this.compiledQueue.size()) {
-      let currentModulePath = this.compiledQueue.dequeue();
-      const compiledModule = this.compiledModules(currentModulePath)
-      this.compiledModules.push((compiledModule));
+    while (this.#compiledQueue.size()) {
+      let currentModulePath = this.#compiledQueue.dequeue();
+      const compiledModule = this.#compileModule(currentModulePath);
+      this.compiledModules.push(compiledModule);
     }
 
-    return this.compiledModules;
+    return {
+      moduleCache: this.#findModuleList,
+      moduleList: this.compiledModules,
+    };
   }
 
-  compileModule(filePath) {
+  #compileModule(filePath) {
     let fileContent = PathUtil.getContentInPath(filePath, 'utf-8');
     const ast = parseSync(fileContent);
 
@@ -46,22 +50,22 @@ class ModuleCompiler {
 
         // 앞이 '.' 으로 시작하는지 아닌지에 따라 경로 탐색 로직을 이원화.
         const modulePath = importPath.startsWith('.')
-          ? this.getLocalModulePath(importPath, filePath)
-          : this.getNpmModulePath(importPath, filePath);
+          ? this.#getLocalModulePath(importPath, filePath)
+          : this.#getNpmModulePath(importPath, filePath);
 
         // 새로 찾은 모듈이라면 목록에 추가하고, 다음 컴파일할 목록에 추가한다.
-        if (!this.findModuleList.has(modulePath)) {
-          this.findModuleList.add(modulePath);
-          this.compiledQueue.enqueue(modulePath);
+        if (!this.#findModuleList.has(modulePath)) {
+          this.#findModuleList.add(modulePath);
+          this.#compiledQueue.enqueue(modulePath);
         }
 
         dependencyList.push(modulePath);
-      }); 
+      });
 
-    return { modulePath, dependencyList }
+    return { modulePath: filePath, dependencyList, fileContent };
   }
 
-  getLocalModulePath(path, root) {
+  #getLocalModulePath(path, root) {
     let absolutePath = root ? resolve(dirname(root), path) : resolve(path);
 
     // 1. 해당 절대 경로에 파일이 존재한다면 모듈이므로, 즉시 return
@@ -79,7 +83,7 @@ class ModuleCompiler {
     throw new Error('해당 모듈의 경로를 찾을 수 없습니다.');
   }
 
-  getNpmModulePath(package, root) {
+  #getNpmModulePath(modulePath, root) {
     let rootPath = dirname(root);
 
     // 해당 루트 경로를 기준으로 node_modules 디렉토리가 있는지 검사.
@@ -94,7 +98,7 @@ class ModuleCompiler {
     }
 
     // node_modules 탐색 종료 후, 해당 위치를 기반으로 package의 경로를 추출
-    let packagePath = resolve(rootPath, 'node_modules', package);
+    let packagePath = resolve(rootPath, 'node_modules', modulePath);
 
     // 1. 해당 Path 가 파일을 경우, 즉시 해당 경로를 return
     let packageFilePath = packagePath + '.js';
