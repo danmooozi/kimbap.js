@@ -11,8 +11,12 @@
     "type": "git",
     "url": "git+https://github.com/danmooozi/kimbap.js.git"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "bundler"
+  ],
+  "author": "danmoozi",
+  "license": "MIT",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/danmooozi/kimbap.js/issues"
   },
