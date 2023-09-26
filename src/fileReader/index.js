@@ -26,6 +26,9 @@ const parseFile = (filename) => {
   const absolutePath = path.resolve(filename);
   const code = readFile(absolutePath);
 
+	console.log(absolutePath);
+	console.log(code);
+	
   if (code === null) {
     throw new Error(`Cannot read file ${filename}`);
   }
@@ -55,14 +58,15 @@ const inputInterface = () => {
  * 파일을 읽어 AST를 반환
  * @returns {Object} AST
  */
-const fileInput = () => {
+const fileReader = () => {
   const { option, filePath } = inputInterface();
   const ast = parseFile(filePath);
 
   if (option) {
     // TO DO : option 처리
   }
+console.log(ast);
   return ast;
 };
 
-export default fileInput;
+export default fileReader;

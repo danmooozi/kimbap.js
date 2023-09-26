@@ -2,9 +2,11 @@ import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 import ModuleCompiler from './parser/index.js';
+import fileReader from './fileReader';
 
 class KimbapBundler {
-  constructor({ entry, output }) {
+  constructor({ entry, output, ast }) {
+	this.ast = null;
     this.entry = entry;
     this.output = output;
   }
@@ -15,19 +17,20 @@ class KimbapBundler {
     const compiledModule = moduleCompiler.run();
     console.log(compiledModule);
   }
+  
+  fileRead() {
+	fileReader();
+  }
 }
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const bundlerOptions = {
     entry: resolve(__dirname, "./origin/index.js"),
     output: {
         path: join(__dirname, "./dist"),
         fileName: "main.js",
-    }
+    },
 }
 
-console.log(bundlerOptions)
-
 const bundler = new KimbapBundler(bundlerOptions);
+bundler.fileRead();
 bundler.build();
