@@ -1,10 +1,11 @@
 {
   "name": "kimbap",
   "version": "1.0.0",
-  "description": "javascript bundler",
+  "description": "JavaScript bundler",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node ./main.js",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "homepage": "https://github.com/danmooozi/kimbap.js#readme",
   "dependencies": {
     "@babel/core": "^7.22.20"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
