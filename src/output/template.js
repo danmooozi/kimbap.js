@@ -12,21 +12,6 @@ const trim = (target) => {
     return lines.map(line => line.replace(regex, '')).join('\n');
 }
 
-// const requireFunctionTemplate = () =>
-//     `
-//     const moduleCache = {};
-//     const require = moduleName => {
-//         if (moduleCache[moduleName]) {
-//             return moduleCache[moduleName];
-//         }
-//         const exports = {};
-//         moduleCache[moduleName] = exports;
-
-//         modules[moduleName](exports, require);
-//         return moduleCache[moduleName];
-//     };
-// `;
-
 /**
  * require function template (exports shortcut)
  *

@@ -65,7 +65,6 @@ const fileReader = () => {
   if (option) {
     // TO DO : option 처리
   }
-console.log(ast);
   return ast;
 };
 

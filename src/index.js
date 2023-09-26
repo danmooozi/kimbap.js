@@ -2,11 +2,9 @@ import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
 import ModuleCompiler from './parser/index.js';
-import fileReader from './fileReader';
 
 class KimbapBundler {
   constructor({ entry, output, ast }) {
-	this.ast = null;
     this.entry = entry;
     this.output = output;
   }
@@ -14,15 +12,13 @@ class KimbapBundler {
   // FIXME : 모듈이 정상적으로 컴파일 되는지 테스트 하기 위한 용도
   build() {
     const moduleCompiler = new ModuleCompiler(this.entry);
-    const compiledModule = moduleCompiler.run();
+    const compiledModule = moduleCompiler.run(ast);
     console.log(compiledModule);
-  }
-  
-  fileRead() {
-	fileReader();
   }
 }
 
+// entry 를 밖에서 해줘야함
+// fileReader 가 여기 있는 Options
 const bundlerOptions = {
     entry: resolve(__dirname, "./origin/index.js"),
     output: {
@@ -32,5 +28,4 @@ const bundlerOptions = {
 }
 
 const bundler = new KimbapBundler(bundlerOptions);
-bundler.fileRead();
 bundler.build();
