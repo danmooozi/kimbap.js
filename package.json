@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/danmooozi/kimbap.js#readme",
   "dependencies": {
-    "@babel/core": "^7.22.20"
+    "@babel/core": "^7.22.20",
   },
   "devDependencies": {
     "jest": "^29.7.0"
