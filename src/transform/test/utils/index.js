@@ -1,5 +1,7 @@
-import transform from '..';
-import contentToAST from '../../main';
+import { parseSync } from '@babel/core';
+import transform from '../../index.js';
+
+const contentToAST = (content) => parseSync(content);
 
 export const format = (strings) => {
   const source = strings.join('').trim();
