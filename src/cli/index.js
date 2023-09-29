@@ -5,16 +5,12 @@ const CommandLineInterface = () => {
   const buildOptions = DEFAULT_OPTIONS;
   const buildQueue = new Queue(process.argv.slice(2));
 
-  console.log(buildQueue.queue);
-  console.log(buildQueue.size());
-
   while (buildQueue.size()) {
     // flag 인지 source 인지 구분
     const currentOption = buildQueue.dequeue();
     if (currentOption.startsWith('-')) {
       const requireSource = [];
-      const optionFunction = OPTION[currentOption].function;
-      const requireSourceCount = OPTION[currentOption].requireSource;
+      const { optionFunction, requireSourceCount } = OPTION[currentOption];
 
       for (let i = 0; i < requireSourceCount; i++) {
         if (!buildQueue.size()) {
