@@ -1,5 +1,16 @@
 import { types as t, template } from '@babel/core';
-import { isArray, getModuleExportsAssignment } from './utils/index.js';
+import { isArray } from '../util/assertion.js';
+
+const getModuleExportsAssignment = (value, property = 'default') => {
+  const moduleTemplate = template(`module.exports.PROPERTY = MODULE;`);
+
+  const newNode = moduleTemplate({
+    PROPERTY: property,
+    MODULE: value,
+  });
+
+  return newNode;
+};
 
 const kimbapVisitor = {
   ImportDeclaration: importDeclarationVisitor,
