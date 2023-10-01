@@ -1,5 +1,3 @@
-import fs from 'fs';
-import path from 'path';
 import PathUtil from '../util/path';
 import FileUtil from '../util/file';
 
