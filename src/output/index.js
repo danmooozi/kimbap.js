@@ -21,7 +21,7 @@ const createOutputDirectory = (directoryPath) => {
  * @param {object} configs 
  * @param {string} outputContent 
  */
-const createOuputFile = (configs, outputContent) => {
+const createOutputFile = (configs, outputContent) => {
     const { output } = configs || {};
 
     const directoryPath = createOutputDirectory(output.path);
@@ -31,5 +31,5 @@ const createOuputFile = (configs, outputContent) => {
 }
 
 module.exports = {
-    createOuputFile
+    createOutputFile
 }

@@ -18,7 +18,7 @@ const requireFunctionTemplate = () =>
 `;
 
 /**
- * template for transfiled function and dependency map
+ * template for transformed function and dependency map
  * @param {object} module
  * @param {string} module.filepath 
  * @param {string} module.transformedContent
