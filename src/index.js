@@ -14,18 +14,10 @@ class KimbapBundler {
     const moduleCompiler = new ModuleCompiler(this.entry);
     const { moduleCache, moduleList } = moduleCompiler.run(ast);
 
-    // transform content
-    const transformedModuleList = moduleList.map(
-      ({ ast, fileContent, ...rest }) => ({
-        fileContent: transform(ast, fileContent).transformedContent,
-        ...rest,
-      }),
-    );
-
     // bundle using template
     const [entryFile] = moduleCache;
     const outputContent = runtimeTemplate(
-      moduleMapTemplate(transformedModuleList),
+      moduleMapTemplate(moduleList),
       entryFile,
     );
 
