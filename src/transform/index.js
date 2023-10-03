@@ -24,8 +24,8 @@ const transform = (ast, content, options) => {
     transformFromAstSync(ast, content, {
       ast: requireAst,
       code: requireCode,
-      plugins: Object.entries(PLUGIN_MAP).map(
-        ([_key, { plugin, conditions }]) =>
+      plugins: Object.values(PLUGIN_MAP).map(
+        ({ plugin, conditions }) =>
           conditions.every((func) => func(restOptions)) && plugin,
       ),
     });
