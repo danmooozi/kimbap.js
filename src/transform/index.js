@@ -2,13 +2,13 @@ import { transformFromAstSync } from '@babel/core';
 import transformEsmToCjs from './transform-esm-to-cjs.js';
 import transformStrictMode from './transform-strict-mode.js';
 
-const DEFAULT_OPTS = {
+const DEFAULT_OPTIONS = {
   requireCode: true,
   requireAst: false,
 };
 
-const transform = (ast, content, opts = DEFAULT_OPTS) => {
-  const { requireAst, requireCode } = opts;
+const transform = (ast, content, options = DEFAULT_OPTIONS) => {
+  const { requireAst, requireCode } = options;
 
   const { ast: transformedAst, code: transformedContent } =
     transformFromAstSync(ast, content, {
