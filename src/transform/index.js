@@ -1,20 +1,32 @@
 import { transformFromAstSync } from '@babel/core';
 import transformEsmToCjs from './transform-esm-to-cjs.js';
 import transformStrictMode from './transform-strict-mode.js';
+import { DEFAULT_OPTS, FORMAT } from './constants/index.js';
 
-const DEFAULT_OPTIONS = {
-  requireCode: true,
-  requireAst: false,
+const getActualOpts = (opts) => Object.assign({}, DEFAULT_OPTS, opts);
+
+const PLUGIN_MAP = {
+  strictMode: {
+    plugin: transformStrictMode,
+    conditions: [],
+  },
+  esmToCjs: {
+    plugin: transformEsmToCjs,
+    conditions: [({ format }) => FORMAT[format] === FORMAT.CJS],
+  },
 };
 
-const transform = (ast, content, options = DEFAULT_OPTIONS) => {
-  const { requireAst, requireCode } = options;
+const transform = (ast, content, opts) => {
+  const { requireAst, requireCode, ...restOpts } = getActualOpts(opts);
 
   const { ast: transformedAst, code: transformedContent } =
     transformFromAstSync(ast, content, {
       ast: requireAst,
       code: requireCode,
-      plugins: [transformStrictMode, transformEsmToCjs],
+      plugins: Object.entries(PLUGIN_MAP).map(
+        ([_key, { plugin, conditions }]) =>
+          conditions.every((func) => func(restOpts)) && plugin,
+      ),
     });
 
   return {
