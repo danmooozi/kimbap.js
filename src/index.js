@@ -12,17 +12,17 @@ class KimbapBundler {
   // FIXME : 모듈이 정상적으로 컴파일 되는지 테스트 하기 위한 용도
   build() {
     const moduleCompiler = new ModuleCompiler(this.entry);
-    const { moduleCache, moduleList } = moduleCompiler.run(ast);
+    const { moduleList } = moduleCompiler.run(ast);
 
     // bundle using template
-    const [entryFile] = moduleCache;
+    const entryFilePath = moduleList[0].filePath;
     const outputContent = runtimeTemplate(
       moduleMapTemplate(moduleList),
-      entryFile,
+      entryFilePath,
     );
 
     // create output
-    createOuputFile({ output }, outputContent);
+    createOutputFile({ output }, outputContent);
   }
 }
 
