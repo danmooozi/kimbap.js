@@ -1,7 +1,11 @@
 import { types as t, template } from '@babel/core';
+import { DEFAULT_IMPORT_KEYWORD } from './constants/index.js';
 import { isArray } from '../util/assertion.js';
 
-const getModuleExportsAssignment = (value, property = 'default') => {
+const getModuleExportsAssignment = (
+  value,
+  property = DEFAULT_IMPORT_KEYWORD,
+) => {
   const moduleTemplate = template(`module.exports.PROPERTY = MODULE;`);
 
   const newNode = moduleTemplate({
@@ -46,7 +50,7 @@ function importDeclarationVisitor(path) {
     // default export 의 형태인 경우 import a from "source"
     // 아닌 경우 import { a } from "source"
     const importedKey = specifier.isImportDefaultSpecifier()
-      ? 'default'
+      ? DEFAULT_IMPORT_KEYWORD
       : specifier.get('imported.name').node;
 
     // convert console.log(square(1, 2)) to console.log(newIdentifier[`importedKey`](1, 2))
