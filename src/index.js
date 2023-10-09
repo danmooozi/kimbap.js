@@ -12,20 +12,29 @@ class KimbapBundler {
   // FIXME : 모듈이 정상적으로 컴파일 되는지 테스트 하기 위한 용도
   build() {
     const moduleCompiler = new ModuleCompiler(this.entry);
-    const compiledModule = moduleCompiler.run(ast);
-    console.log(compiledModule);
+    const { moduleList } = moduleCompiler.run(ast);
+
+    // bundle using template
+    const entryFilePath = moduleList[0].filePath;
+    const outputContent = runtimeTemplate(
+      moduleMapTemplate(moduleList),
+      entryFilePath,
+    );
+
+    // create output
+    createOutputFile({ output }, outputContent);
   }
 }
 
 // entry 를 밖에서 해줘야함
 // fileReader 가 여기 있는 Options
 const bundlerOptions = {
-    entry: resolve(__dirname, "./origin/index.js"),
-    output: {
-        path: join(__dirname, "./dist"),
-        fileName: "main.js",
-    },
-}
+  entry: resolve(__dirname, './origin/index.js'),
+  output: {
+    path: join(__dirname, './dist'),
+    fileName: 'main.js',
+  },
+};
 
 const bundler = new KimbapBundler(bundlerOptions);
 bundler.build();
