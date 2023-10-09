@@ -7,13 +7,21 @@ class KimbapBundler {
     this.output = output;
   }
 
-  // FIXME : 모듈이 정상적으로 컴파일 되는지 테스트 하기 위한 용도
   build() {
     const moduleCompiler = new ModuleCompiler(this.entry);
-    moduleCompiler.run(ast);
+    const { moduleList } = moduleCompiler.run(ast);
+     
+    const entryFilePath = moduleList[0].filePath;
+    const outputContent = runtimeTemplate(
+      moduleMapTemplate(moduleList),
+      entryFilePath,
+    );
+    
+    createOutputFile({ output }, outputContent);
   }
 }
 
 const bundlerOptions = CommandLineInterface();
 const bundler = new KimbapBundler(bundlerOptions);
+
 bundler.build();

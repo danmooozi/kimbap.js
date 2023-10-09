@@ -1,7 +1,7 @@
-const { format, contentToTransformedContent } = require("./utils");
+import { format, contentToTransformedContent } from './utils';
 
-describe("import declaration", () => {
-  it("can support Default import", () => {
+describe('import declaration', () => {
+  it('can support Default import', () => {
     const content = `
       import square from './square';
       console.log("Area of square: ", square(3, 5));
@@ -15,11 +15,11 @@ describe("import declaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 
-  it("can support Named import", () => {
+  it('can support Named import', () => {
     const content = `
       import { a } from './square';
       console.log("Area of square: ", a(3, 5));
@@ -33,13 +33,13 @@ describe("import declaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 });
 
-describe("ExportDefaultDeclaration", () => {
-  it("can support function Declaration", () => {
+describe('ExportDefaultDeclaration', () => {
+  it('can support function Declaration', () => {
     const content = `
       export default function test(user) {
         console.log(user);
@@ -57,11 +57,11 @@ describe("ExportDefaultDeclaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 
-  it("can support Variable Declarations", () => {
+  it('can support Variable Declarations', () => {
     const content = `
       const test = 'test';
       export default test;
@@ -75,13 +75,13 @@ describe("ExportDefaultDeclaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 });
 
-describe("ExportNamedDeclaration", () => {
-  it("can support function Declaration", () => {
+describe('ExportNamedDeclaration', () => {
+  it('can support function Declaration', () => {
     const content = `
       export function functionName() {}
     `;
@@ -93,11 +93,11 @@ describe("ExportNamedDeclaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 
-  it("can support Variable Declarations", () => {
+  it('can support Variable Declarations', () => {
     const content = `
       export const foo = 'a', bar = 'b';
     `;
@@ -110,11 +110,11 @@ describe("ExportNamedDeclaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 
-  it("can support export list", () => {
+  it('can support export list', () => {
     const content = `
       const name1 = 'a';
       const name2 = 'b';
@@ -131,7 +131,7 @@ describe("ExportNamedDeclaration", () => {
     `;
 
     expect(contentToTransformedContent(content)).toBe(
-      expectedTransformedContent
+      expectedTransformedContent,
     );
   });
 });

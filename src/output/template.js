@@ -1,16 +1,4 @@
-/**
- * 문자열 trim 함수 (util 함수로 빼도 될듯)
- * @param {string} target 
- * 
- * @returns {string}
- */
-const trim = (target) => {
-    const lines = target.split('\n').filter(Boolean);
-    const padLength = lines[0].length - lines[0].trimLeft().length;
-    const regex = new RegExp(`^\\s{${padLength}}`);
-
-    return lines.map(line => line.replace(regex, '')).join('\n');
-}
+import StringUtil from "../util/string";
 
 /**
  * require function template (exports shortcut)
@@ -30,7 +18,7 @@ const requireFunctionTemplate = () =>
 `;
 
 /**
- * template for transfiled function and dependency map
+ * template for transformed function and dependency map
  * @param {object} module
  * @param {string} module.filepath 
  * @param {string} module.transformedContent
@@ -65,7 +53,7 @@ const moduleMapTemplate = (modules) => `{${modules.map(module => moduleTemplate(
  * @returns {string}
  */
 const runtimeTemplate = (modules, entry) => {
-    return trim(`
+    return StringUtil.trim(`
         function kimbapStart({ modules, entry }) { 
             ${requireFunctionTemplate()}
 

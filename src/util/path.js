@@ -36,6 +36,16 @@ class PathUtil {
   static getContentInPath(path) {
     return readFileSync(path, 'UTF-8');
   }
+
+  /**
+   * join paths
+   * @param {string[]} paths 
+   * 
+   * @returns string
+   */
+  static join(paths) {
+    return join(...paths);
+  }
 }
 
 export default PathUtil;
