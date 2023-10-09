@@ -10,7 +10,7 @@ const CommandLineInterface = () => {
     const currentOption = buildQueue.dequeue();
     if (currentOption.startsWith('-')) {
       const requireSource = [];
-      const { optionFunction, requireSourceCount } = OPTION[currentOption];
+      const { function: optionFunction, requireSource: requireSourceCount } = OPTION[currentOption];
 
       for (let i = 0; i < requireSourceCount; i++) {
         if (!buildQueue.size()) {
