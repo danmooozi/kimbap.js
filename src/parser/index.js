@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'path';
 import { parseSync } from '@babel/core';
+import { transform } from '../transform/index.js'
 import Queue from '../util/queue.js';
 import PathUtil from '../util/path.js';
 
@@ -40,7 +41,7 @@ class ModuleCompiler {
     const ast = parseSync(fileContent);
 
     // 현재 컴파일을 진행 중인 모듈과 의존성 관계를 맺은 모듈 경로 목록.
-    const dependencyList = [];
+    const mapping = {};
 
     // 해당 Module의 AST를 순회하여 ImportDeclaration 타입의 노드를 찾는다.
     ast.program.body
@@ -59,10 +60,13 @@ class ModuleCompiler {
           this.#compiledQueue.enqueue(modulePath);
         }
 
-        dependencyList.push(modulePath);
+        mapping[importPath] = modulePath;
       });
 
-    return { modulePath: filePath, dependencyList, fileContent };
+    // 현재 모듈의 코드를 transform 하여 변환된 결과를 보관
+    const { transformedContent } = transform(ast, fileContent);
+
+    return { filePath, mapping, transformedContent };
   }
 
   #getLocalModulePath(path, root) {
