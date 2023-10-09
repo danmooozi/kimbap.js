@@ -1,5 +1,5 @@
-import PathUtil from '../util/path';
-import FileUtil from '../util/file';
+import PathUtil from '../util/path.js';
+import FileUtil from '../util/file.js';
 
 /**
  * create output directory 
@@ -21,15 +21,11 @@ const createOutputDirectory = (directoryPath) => {
  * @param {object} configs 
  * @param {string} outputContent 
  */
-const createOutputFile = (configs, outputContent) => {
-    const { output } = configs || {};
+export const createOutputFile = (output, outputContent) => {
+    const { path, filename } = output;
 
-    const directoryPath = createOutputDirectory(output.path);
-    const filePath = PathUtil.join([directoryPath, output.filename]);
+    const directoryPath = createOutputDirectory(path);
+    const filePath = PathUtil.join([directoryPath, filename]);
 
     FileUtil.createFile(filePath, outputContent);
-}
-
-module.exports = {
-    createOutputFile
 }
