@@ -119,7 +119,7 @@ class ModuleCompiler {
       let mainPath = jsonContent.module || jsonContent.main || undefined;
 
       if (mainPath) {
-        return resolve(packagePath, main);
+        return resolve(packagePath, mainPath);
       }
     }
 
