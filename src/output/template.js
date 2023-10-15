@@ -1,4 +1,4 @@
-import StringUtil from "../util/string";
+import StringUtil from "../util/string.js";
 
 /**
  * require function template (exports shortcut)
@@ -8,10 +8,14 @@ import StringUtil from "../util/string";
 const requireFunctionTemplate = () => 
 `
     const require = moduleName => {
+        if (moduleCache[moduleName]) {
+            return moduleCache[moduleName];
+        }
         const { fn, map } = modules[moduleName];
         const localRequire = path => require(map[path])
         
         const module = { exports: {} };
+        moduleCache[moduleName] = module.exports;
         fn(localRequire, module, module.exports);
         return module.exports;
     }
@@ -42,7 +46,7 @@ const moduleTemplate = ({ filePath, transformedContent, mapping }) =>
  * 
  * @returns {array}
  */
-const moduleMapTemplate = (modules) => `{${modules.map(module => moduleTemplate(module)).join(',')}}`;
+export const moduleMapTemplate = (modules) => `{${modules.map(module => moduleTemplate(module)).join(',')}}`;
 
 /**
  * bundler runtime template 
@@ -52,18 +56,15 @@ const moduleMapTemplate = (modules) => `{${modules.map(module => moduleTemplate(
  * 
  * @returns {string}
  */
-const runtimeTemplate = (modules, entry) => {
+export const runtimeTemplate = (modules, entry) => {
     return StringUtil.trim(`
-        function kimbapStart({ modules, entry }) { 
+        function kimbapStart(modules, entry) {
+            const moduleCache = {};
             ${requireFunctionTemplate()}
 
-            require(${entry});
+            require(${JSON.stringify(entry)});
         }
 
-        kimbapStart({ ${modules}, ${entry} });
+        kimbapStart(${modules}, ${JSON.stringify(entry)});
     `);
-}
-
-module.exports = {
-    runtimeTemplate,
 }

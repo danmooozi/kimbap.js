@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'path';
 import { parseSync } from '@babel/core';
-import { transform } from '../transform/index.js'
+import transform from '../transform/index.js'
 import Queue from '../util/queue.js';
 import PathUtil from '../util/path.js';
 
@@ -119,7 +119,7 @@ class ModuleCompiler {
       let mainPath = jsonContent.module || jsonContent.main || undefined;
 
       if (mainPath) {
-        return resolve(packagePath, main);
+        return resolve(packagePath, mainPath);
       }
     }
 

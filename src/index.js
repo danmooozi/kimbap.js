@@ -1,5 +1,7 @@
 import ModuleCompiler from './parser/index.js';
 import CommandLineInterface from './cli/index.js';
+import { runtimeTemplate, moduleMapTemplate } from './output/template.js';
+import { createOutputFile } from './output/index.js';
 
 class KimbapBundler {
   constructor({ entry, output, ast }) {
@@ -9,7 +11,7 @@ class KimbapBundler {
 
   build() {
     const moduleCompiler = new ModuleCompiler(this.entry);
-    const { moduleList } = moduleCompiler.run(ast);
+    const { moduleList } = moduleCompiler.run();
      
     const entryFilePath = moduleList[0].filePath;
     const outputContent = runtimeTemplate(
@@ -17,7 +19,7 @@ class KimbapBundler {
       entryFilePath,
     );
     
-    createOutputFile({ output }, outputContent);
+    createOutputFile(this.output, outputContent);
   }
 }
 
