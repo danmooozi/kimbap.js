@@ -1,12 +1,14 @@
 import { dirname, resolve } from 'path';
 import { parseSync } from '@babel/core';
 import transform from '../transform/index.js'
+import { createSourceMap } from '../sourcemap/index.js';
 import Queue from '../util/queue.js';
 import PathUtil from '../util/path.js';
 
 class ModuleCompiler {
-  constructor(entry) {
+  constructor(entry, output) {
     this.entry = entry;
+    this.output = output;
     // 컴파일이 완료된 모듈을 담은 Array compiledModules
     this.compiledModules = [];
   }
@@ -63,10 +65,12 @@ class ModuleCompiler {
         mapping[importPath] = modulePath;
       });
 
+
+    const sourceMapContent = createSourceMap({ ast, fileContent, filePath, entryPath: this.entry, outputPath: this.output });
     // 현재 모듈의 코드를 transform 하여 변환된 결과를 보관
     const { transformedContent } = transform(ast, fileContent);
 
-    return { filePath, mapping, transformedContent };
+    return { filePath, mapping, transformedContent, sourceMapContent };
   }
 
   #getLocalModulePath(path, root) {
