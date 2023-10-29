@@ -1,0 +1,5 @@
+.prettierrc
+.gitignore
+README.md
+node_modules
+example

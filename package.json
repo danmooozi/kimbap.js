@@ -4,7 +4,8 @@
   "description": "JavaScript bundler",
   "main": "index.js",
   "scripts": {
-    "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest"
+    "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest",
+    "publish": "npm version patch && git push --follow-tags && npm publish"
   },
   "repository": {
     "type": "git",
