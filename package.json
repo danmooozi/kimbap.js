@@ -1,6 +1,6 @@
 {
   "name": "@danmooozi/kimbap",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "JavaScript bundler",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/danmooozi/kimbap.js.git"
   },
   "publishConfig": {
-  	"registry": "https://npm.pkg.github.com/"
+    "registry": "https://npm.pkg.github.com/"
   },
   "keywords": [
     "bundler"
