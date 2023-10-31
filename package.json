@@ -2,7 +2,7 @@
   "name": "@danmooozi/kimbap",
   "version": "0.0.12",
   "description": "JavaScript bundler",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest",
     "pub": "npm version patch && git push --follow-tags && npm publish"
