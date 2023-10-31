@@ -101,6 +101,10 @@ class ModuleCompiler {
       rootPath = dirname(rootPath);
     }
 
+    if (!rootPath.includes('node_modules')) {
+      throw new Error('프로젝트 내에서 node_modules 폴더를 찾을 수 없습니다.')
+    }
+
     // node_modules 탐색 종료 후, 해당 위치를 기반으로 package의 경로를 추출
     let packagePath = resolve(rootPath, 'node_modules', modulePath);
 
