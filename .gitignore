@@ -132,3 +132,5 @@ dist
 
 # vscode
 *.code-workspace
+
+goorm.manifest
