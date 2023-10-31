@@ -7,7 +7,7 @@ It is JavaScript bundler.
 ## Install
 
 ```bash
-npm install kimbap.js
+npm install kimbap
 ```
 
 ## Usage
