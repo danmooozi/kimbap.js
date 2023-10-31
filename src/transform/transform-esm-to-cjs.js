@@ -102,6 +102,13 @@ function exportNamedDeclarationVisitor(path) {
   if (path.has('declaration')) {
     const declaration = path.get('declaration');
 
+    if (declaration.isClassDeclaration) {
+      declarations.push({
+        name: declaration.node.id,
+        value: t.toExpression(declaration.node),
+      });
+    }
+
     if (declaration.isFunctionDeclaration()) {
       declarations.push({
         name: declaration.node.id,
