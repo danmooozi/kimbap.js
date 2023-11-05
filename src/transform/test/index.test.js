@@ -1,4 +1,5 @@
 import { format, contentToTransformedContent } from './utils';
+import { DEFAULT_IMPORT_KEYWORD } from '../constants';
 
 describe('import declaration', () => {
   it('can support Default import', () => {
@@ -11,7 +12,7 @@ describe('import declaration', () => {
       "use strict";
 
       const _imported = require("./square");
-      console.log("Area of square: ", _imported["default"](3, 5));
+      console.log("Area of square: ", _imported["${DEFAULT_IMPORT_KEYWORD}"](3, 5));
     `;
 
     expect(contentToTransformedContent(content)).toBe(
@@ -49,7 +50,7 @@ describe('ExportDefaultDeclaration', () => {
     const expectedTransformedContent = format`
       "use strict";
 
-      module.exports.default = test;
+      module.exports.${DEFAULT_IMPORT_KEYWORD} = test;
       function test(user) {
         console.log(user);
       }
@@ -71,7 +72,7 @@ describe('ExportDefaultDeclaration', () => {
       "use strict";
 
       const test = 'test';
-      module.exports.default = test;
+      module.exports.${DEFAULT_IMPORT_KEYWORD} = test;
     `;
 
     expect(contentToTransformedContent(content)).toBe(
