@@ -1,7 +1,7 @@
 import { transformFromAstSync } from '@babel/core';
 import transformEsmToCjs from './transform-esm-to-cjs.js';
 import transformStrictMode from './transform-strict-mode.js';
-import { DEFAULT_OPTIONS, FORMAT } from './constants/index.js';
+import { DEFAULT_OPTIONS } from './constants/index.js';
 
 const getActualOptions = (options) =>
   Object.assign({}, DEFAULT_OPTIONS, options);
@@ -13,7 +13,7 @@ const PLUGIN_MAP = {
   },
   esmToCjs: {
     plugin: transformEsmToCjs,
-    conditions: [({ format }) => FORMAT[format] === FORMAT.CJS],
+    conditions: [],
   },
 };
 
