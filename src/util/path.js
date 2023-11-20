@@ -2,11 +2,9 @@ import {
   existsSync,
   lstatSync,
   readFileSync,
-  mkdirSync,
-  writeFileSync,
 } from 'fs';
 
-import { join } from 'path';
+import { join, relative } from 'path';
 
 /**
  * Node.js 에서 require() 모듈을 찾기 위해 진행하는 알고리즘을 구현하기 위한 Util
@@ -41,10 +39,21 @@ class PathUtil {
    * join paths
    * @param {string[]} paths 
    * 
-   * @returns string
+   * @returns {string}
    */
   static join(paths) {
     return join(...paths);
+  }
+
+  /** 
+   * get relative path 
+   * @param {string} from
+   * @param {string} to
+   * 
+   * @returns {string}
+  */
+  static relative(from, to) {
+    return relative(from, to);
   }
 }
 
