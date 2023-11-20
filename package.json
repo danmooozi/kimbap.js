@@ -1,19 +1,23 @@
 {
-  "name": "kimbap",
-  "version": "1.0.0",
+  "name": "@danmooozi/kimbap",
+  "version": "0.0.12",
   "description": "JavaScript bundler",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest"
+    "test": "node --trace-warnings --experimental-vm-modules ./node_modules/.bin/jest",
+    "pub": "npm version patch && git push --follow-tags && npm publish"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/danmooozi/kimbap.js.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "keywords": [
     "bundler"
   ],
-  "author": "danmoozi",
+  "author": "danmooozi",
   "license": "MIT",
   "type": "module",
   "bugs": {
