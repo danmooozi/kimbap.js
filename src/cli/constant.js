@@ -2,6 +2,7 @@ import {
   setOutputPath,
   setEntryPath,
   setOutputFileName,
+  setSourceMap,
 } from './optionFunction.js';
 import { resolve } from 'path';
 
@@ -10,6 +11,7 @@ const HELP_MESSAGE = `
 
     Options:
         -e, --entry <path>    Entry file path
+        -s, --sourcemaps      Output with sourcemaps
         -o, --output <path>   Output file path
         -d, --dist <filename> Output file name
         -h, --help            Output usage information
@@ -20,6 +22,9 @@ const DEFAULT_OPTIONS = {
   output: {
     path: '/dist',
     filename: 'bundle.js',
+  },
+  option: {
+    sourceMap: false,
   },
 };
 
@@ -47,6 +52,11 @@ const getHelpMessageOption = {
   requireSource: 0,
 };
 
+const setSourceMapOption = {
+  function: setSourceMap,
+  requireSource: 0,
+};
+
 const OPTION = {
   '-e': entryOption,
   '--entry': entryOption,
@@ -56,6 +66,8 @@ const OPTION = {
   '--dist': setOutputFileNameOption,
   '-h': getHelpMessageOption,
   '--help': getHelpMessageOption,
+  '-s': setSourceMapOption,
+  '--sourcemaps': setSourceMapOption,
 };
 
 export { OPTION, DEFAULT_OPTIONS };

@@ -43,4 +43,11 @@ const setOutputFileName = (fileName, options) => {
   options.output.fileName = fileName;
 };
 
-export { setOutputPath, setOutputFileName, setEntryPath };
+const setSourceMap = (options) => {
+  if (!options) {
+    throw new Error('options가 존재하지 않습니다.');
+  }
+  options.sourceMap = true;
+};
+
+export { setOutputPath, setOutputFileName, setEntryPath, setSourceMap };

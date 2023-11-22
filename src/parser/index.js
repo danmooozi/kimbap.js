@@ -1,14 +1,15 @@
 import { dirname, resolve } from 'path';
 import { parseSync } from '@babel/core';
-import transform from '../transform/index.js'
+import transform from '../transform/index.js';
 import { createSourceMap } from '../sourcemap/index.js';
 import Queue from '../util/queue.js';
 import PathUtil from '../util/path.js';
 
 class ModuleCompiler {
-  constructor(entry, output) {
+  constructor(entry, output, options) {
     this.entry = entry;
     this.output = output;
+    this.options = options;
     // 컴파일이 완료된 모듈을 담은 Array compiledModules
     this.compiledModules = [];
   }
@@ -65,8 +66,18 @@ class ModuleCompiler {
         mapping[importPath] = modulePath;
       });
 
+    const sourceMapContent = null;
+    // sourceMap 옵션이 true 일 경우에만 해당 모듈의 소스맵을 생성한다.
+    if (this.options.sourceMap) {
+      sourceMapContent = createSourceMap({
+        ast,
+        fileContent,
+        filePath,
+        entryPath: this.entry,
+        outputPath: this.output,
+      });
+    }
 
-    const sourceMapContent = createSourceMap({ ast, fileContent, filePath, entryPath: this.entry, outputPath: this.output });
     // 현재 모듈의 코드를 transform 하여 변환된 결과를 보관
     const { transformedContent } = transform(ast, fileContent);
 
@@ -106,7 +117,7 @@ class ModuleCompiler {
     }
 
     if (!rootPath.includes('node_modules')) {
-      throw new Error('프로젝트 내에서 node_modules 폴더를 찾을 수 없습니다.')
+      throw new Error('프로젝트 내에서 node_modules 폴더를 찾을 수 없습니다.');
     }
 
     // node_modules 탐색 종료 후, 해당 위치를 기반으로 package의 경로를 추출

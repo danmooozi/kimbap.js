@@ -1,6 +1,16 @@
 import Queue from '../util/queue.js';
 import { OPTION, DEFAULT_OPTIONS } from './constant.js';
 
+/**
+ * @typedef {object} options - 옵션 객체
+ * @property {boolean} sourceMap - sourcemap 옵션
+ */
+
+/**
+ * 각종 옵션 생성
+ * @returns {Object} options
+ */
+
 const CommandLineInterface = () => {
   const buildOptions = DEFAULT_OPTIONS;
   const buildQueue = new Queue(process.argv.slice(2));
@@ -10,7 +20,8 @@ const CommandLineInterface = () => {
     const currentOption = buildQueue.dequeue();
     if (currentOption.startsWith('-')) {
       const requireSource = [];
-      const { function: optionFunction, requireSource: requireSourceCount } = OPTION[currentOption];
+      const { function: optionFunction, requireSource: requireSourceCount } =
+        OPTION[currentOption];
 
       for (let i = 0; i < requireSourceCount; i++) {
         if (!buildQueue.size()) {
