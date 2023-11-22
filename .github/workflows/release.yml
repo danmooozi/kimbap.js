@@ -1,16 +1,30 @@
-name: Create Release
+name: Update NPM and Create Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  release:
+  update-and-release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Bump version
+        run: npm version minor -m "Bump version to %s"
+
+      - name: Push tags
+        run: git push --follow-tags
 
       - name: Create Release
         uses: actions/create-release@v1
@@ -22,3 +36,8 @@ jobs:
           body: Auto-generated release from GitHub Actions.
           draft: false
           prerelease: false
+
+      - name: Publish to NPM
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
