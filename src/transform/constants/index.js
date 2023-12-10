@@ -1,20 +1,20 @@
-export const FORMAT = {
-  ESM: 'esm',
-  CJS: 'cjs',
-};
+import transformStrictMode from '../transform-strict-mode.js';
+import transformEsmToCjs from '../transform-esm-to-cjs.js';
 
 export const DEFAULT_OPTIONS = {
   requireCode: true,
   requireAst: false,
-  format: FORMAT.CJS,
 };
 
-export const DEFAULT_IMPORT_KEYWORD = 'default';
+export const DEFAULT_IMPORT_KEYWORD = '_default';
 
-// aliases
-Object.assign(FORMAT, {
-  esm: FORMAT.ESM,
-  es: FORMAT.ESM,
-  cjs: FORMAT.CJS,
-  cj: FORMAT.CJS,
-});
+export const PLUGIN_MAP = {
+  strictMode: {
+    plugin: transformStrictMode,
+    conditions: [],
+  },
+  esmToCjs: {
+    plugin: transformEsmToCjs,
+    conditions: [],
+  },
+};
